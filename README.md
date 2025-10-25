@@ -34,8 +34,8 @@ To use the binary cache and avoid building from source, add the following to you
 
 ## Available Packages
 
-- `v6` - Dioxus CLI v6
-- `v7` - Dioxus CLI v7
+- `dioxus-cli_v6` - Dioxus CLI v6
+- `dioxus-cli_v7` - Dioxus CLI v7
 
 ## Example Usage
 
@@ -58,7 +58,7 @@ To use the binary cache and avoid building from source, add the following to you
     in {
       devShells.${system}.default = pkgs.mkShell {
         buildInputs = [
-          dx-nix.packages.${system}.v7
+          dx-nix.packages.${system}.dioxus-cli_v7
         ];
       };
     };
