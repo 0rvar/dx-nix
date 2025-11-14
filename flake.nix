@@ -16,90 +16,72 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
-        buildDioxusCli =
-          {
-            pname,
-            rev,
-            version,
-            sha256,
-          }:
-          let
-            src = pkgs.fetchFromGitHub {
-              owner = "DioxusLabs";
-              repo = "dioxus";
-              inherit rev sha256;
-            };
-          in
-          pkgs.rustPlatform.buildRustPackage {
-            inherit pname version src;
-
-            cargoLock = {
-              lockFile = "${src}/Cargo.lock";
-            };
-
-            cargoBuildFlags = [
-              "--package"
-              "dioxus-cli"
-            ];
-
-            nativeBuildInputs = with pkgs; [
-              pkg-config
-            ];
-
-            buildInputs =
-              with pkgs;
-              (
-                [
-                  openssl
-                  libiconv
-                  pkg-config
-                ]
-                ++ lib.optionals stdenv.isLinux [
-                  glib
-                  gtk3
-                  libsoup_3
-                  webkitgtk_4_1
-                  xdotool
-                ]
-                ++ lib.optionals stdenv.isDarwin (
-                  with darwin.apple_sdk.frameworks;
-                  [
-                    IOKit
-                    Carbon
-                    WebKit
-                    Security
-                    Cocoa
-                  ]
-                )
-              );
-
-            meta = with pkgs.lib; {
-              description = "Dioxus CLI tool";
-              homepage = "https://github.com/DioxusLabs/dioxus";
-              license = licenses.mit;
-              maintainers = [ ];
-              mainProgram = "dx";
-            };
-          };
       in
       {
         packages = {
-          dioxus-cli_v7 = buildDioxusCli {
-            pname = "dioxus-cli_v7";
-            # rev = "main";
-            rev = "a8230d8ff0e769d3c1fee3452b8ea47ec885ecc1";
-            version = "0.7.0-rc.0";
-            sha256 = "sha256-jwlrQ/mLh+uzpflLGCP11X4jJabeMfCl123psjtOsgg=";
-          };
+          dx =
+            let
+              pname = "dx";
+              rev = "03ab7fa";
+              version = "0.7.1";
+              sha256 = "sha256-EzfuD3rWVuomyzqSv4b3SVA6MmQiWAeePbdfXEvkiRk=";
+              src = pkgs.fetchFromGitHub {
+                owner = "DioxusLabs";
+                repo = "dioxus";
+                inherit rev sha256;
+              };
+            in
+            pkgs.rustPlatform.buildRustPackage {
+              inherit pname version src;
 
-          dioxus-cli_v6 = buildDioxusCli {
-            pname = "dioxus-cli_v6";
-            # rev = "v0.6-last";
-            rev = "fc1f1c2";
-            version = "0.6.3";
-            sha256 = "sha256-iA9GDN1hE6KuKINizHZGhXADVZ6xYxl4bbEGqSsl42g";
-          };
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
+
+              cargoBuildFlags = [
+                "--package"
+                "dioxus-cli"
+              ];
+
+              nativeBuildInputs = with pkgs; [
+                pkg-config
+              ];
+
+              buildInputs =
+                with pkgs;
+                (
+                  [
+                    openssl
+                    libiconv
+                    pkg-config
+                  ]
+                  ++ lib.optionals stdenv.isLinux [
+                    glib
+                    gtk3
+                    libsoup_3
+                    webkitgtk_4_1
+                    xdotool
+                  ]
+                  ++ lib.optionals stdenv.isDarwin (
+                    with darwin.apple_sdk.frameworks;
+                    [
+                      IOKit
+                      Carbon
+                      WebKit
+                      Security
+                      Cocoa
+                    ]
+                  )
+                );
+
+              meta = with pkgs.lib; {
+                description = "Dioxus CLI tool";
+                homepage = "https://github.com/DioxusLabs/dioxus";
+                license = licenses.mit;
+                maintainers = [ ];
+                mainProgram = "dx";
+              };
+            };
         };
 
         defaultPackage = self.packages.${system}.dx7;
